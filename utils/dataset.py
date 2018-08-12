@@ -57,7 +57,6 @@ class FerDataset(Dataset):
         mode = modes[mode]
         info_list = self._load_pickle(
             os.path.join(self.base, '{}_{}.pkl'.format(data, mode)))
-        print('{}_{}.pkl'.format(data, mode))
 
         # Prepare labels
         emotions = []
@@ -79,16 +78,16 @@ class FerDataset(Dataset):
         votes_all = np.array(votes_all, dtype=np.float) / 10.
 
         if label == 'ferplus_votes':
-            self.labels = torch.tensor(votes_all)
+            self.labels = torch.FloatTensor(votes_all)
         else:
-            self.labels = torch.tensor(onehot)
+            self.labels = torch.FloatTensor(onehot)
 
     def __getitem__(self, index):
         # Load and preprocess image
         image_name = self.image_names[index]
         image = Image.open(image_name)
         image = (image - self.norm_mean) / self.norm_std
-        image = torch.tensor(image).expand(1, -1, -1)
+        image = torch.FloatTensor(image).expand(1, -1, -1)
 
         # Get label
         label = self.labels[index]
