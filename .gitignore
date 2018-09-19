@@ -2,6 +2,9 @@
 data/
 fer/
 
+# checkpoints
+*.pth.tar
+
 # Mac
 .DS_Store
 
@@ -59,7 +62,6 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 
