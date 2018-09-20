@@ -95,3 +95,36 @@ def find_lr(model, optimizer, dataloader, criterion, wd=0.001, start_lr=1e-8, en
         optimizer.param_groups[0]['lr'] = lr
 
     return log_lrs, losses
+
+
+def get_metrics(log_file):
+    with open(log_file, 'r') as temp:
+        lines = temp.readlines()
+
+    # Get metrics
+    train_dict = {'Step': [], 'Acc': [], 'Loss': []}
+    eval_dict = {'Step': [], 'Acc': [], 'Loss': []}
+    is_conf_line = True
+    conf = ''
+
+    for line in lines:
+        info = None
+
+        if '[TRAIN]' in line:
+            is_conf_line = False
+            items = line.split('[TRAIN]')[-1].split(';')
+            for item in items:
+                key, value = item.strip().split(':')
+                train_dict[key].append(float(value))
+        if '[EVAL]' in line:
+            items = line.split('[EVAL]')[-1].split(';')
+            for item in items:
+                key, value = item.strip().split(':')
+                eval_dict[key].append(float(value))
+
+        if is_conf_line:
+            if 'INFO:' in line:
+                line = line.split('INFO:')[-1].strip() + '\n'
+            conf += line
+
+    return conf, train_dict, eval_dict
